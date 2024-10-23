@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import com.SCGIII.mapmyday.DirectionsAPI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
             @Override
             public void onDirectionsReceived(String travelTime) {
-                // Use the travelTime variable in your front-end or display it
+                // travelTime variable for front-end
                 System.out.println("Travel time: " + travelTime);
             }
 
