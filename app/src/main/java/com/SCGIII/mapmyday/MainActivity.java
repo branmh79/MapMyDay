@@ -34,24 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         updateCalendar();
 
-
-        DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
-            @Override
-            public void onDirectionsReceived(String travelTime) {
-                // travelTime variable for front-end
-                System.out.println("Travel time: " + travelTime);
-            }
-
-            @Override
-            public void onDirectionsError(String error) {
-                // Handle errors
-                System.err.println("Error: " + error);
-            }
-        });
-
         directionsAPI.getTravelTime(startAddress, endAddress);  // Method call
-
-
 
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,5 +84,19 @@ public class MainActivity extends AppCompatActivity {
 
         return days;
     }
+
+    DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
+        @Override
+        public void onDirectionsReceived(String travelTime) {
+            // travelTime variable for front-end
+            System.out.println("Travel time: " + travelTime);
+        }
+
+        @Override
+        public void onDirectionsError(String error) {
+            // Handle errors
+            System.err.println("Error: " + error);
+        }
+    });
 
 }
