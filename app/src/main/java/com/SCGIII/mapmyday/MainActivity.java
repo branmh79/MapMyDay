@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import com.SCGIII.mapmyday.DirectionsAPI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +29,30 @@ public class MainActivity extends AppCompatActivity {
         Button prevButton = findViewById(R.id.prevButton);
         Button nextButton = findViewById(R.id.nextButton);
 
+        String startAddress = "1600 Amphitheatre Parkway, Mountain View, CA";
+        String endAddress = "1 Infinite Loop, Cupertino, CA";
+
+
         updateCalendar();
+
+
+        DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
+            @Override
+            public void onDirectionsReceived(String travelTime) {
+                // Use the travelTime variable in your front-end or display it
+                System.out.println("Travel time: " + travelTime);
+            }
+
+            @Override
+            public void onDirectionsError(String error) {
+                // Handle errors
+                System.err.println("Error: " + error);
+            }
+        });
+
+        directionsAPI.getTravelTime(startAddress, endAddress);  // Method call
+
+
 
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
