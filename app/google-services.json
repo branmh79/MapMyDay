@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148180196285",
+    "project_id": "mapmyday-fb226",
+    "storage_bucket": "mapmyday-fb226.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148180196285:android:81252a54c5d701528f50d4",
+        "android_client_info": {
+          "package_name": "com.group1.mapmyday"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6d7-NfTawFWZ-DKUAAi8VNivkzGsmua0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
