@@ -24,4 +24,6 @@ public class Event {
     public String getEndTime() { return endTime; }
     public String getLocation() { return location; }
     public String getFromLocation() { return fromLocation; }
+
+    //test test github change test
 }
