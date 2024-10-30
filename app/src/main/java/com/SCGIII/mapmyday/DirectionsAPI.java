@@ -15,9 +15,8 @@ public class DirectionsAPI {
     private final String API_KEY = "AIzaSyC3sbRZqRNm5ZfZuiCu3p3jwz81E61Tuvc";
     private OkHttpClient client = new OkHttpClient();
 
-    // Listener to return the result to the front end
+    // listener to return the result to the front end
     private OnDirectionsListener listener;
-
     public DirectionsAPI(OnDirectionsListener listener) {
         this.listener = listener;
     }
@@ -33,7 +32,7 @@ public class DirectionsAPI {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onDirectionsError(e.getMessage());
+                listener.onDirectionsError("Network Error: " + e.getMessage());
             }
 
             @Override
@@ -49,26 +48,23 @@ public class DirectionsAPI {
                             JSONArray legs = route.getJSONArray("legs");
                             JSONObject leg = legs.getJSONObject(0);
 
-                            // Get travel time
                             JSONObject duration = leg.getJSONObject("duration");
                             String travelTime = duration.getString("text");
 
-                            // Pass the travel time back to the front end via listener
                             listener.onDirectionsReceived(travelTime);
                         } else {
                             listener.onDirectionsError("No routes found.");
                         }
                     } catch (Exception e) {
-                        listener.onDirectionsError(e.getMessage());
+                        listener.onDirectionsError("Error parsing response: " + e.getMessage());
                     }
                 } else {
-                    listener.onDirectionsError("Unsuccessful response from API.");
+                    listener.onDirectionsError("API Error: " + response.message());
                 }
             }
         });
     }
 
-    // Interface to pass data back to the front end
     public interface OnDirectionsListener {
         void onDirectionsReceived(String travelTime);
         void onDirectionsError(String error);
