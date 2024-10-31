@@ -1,9 +1,18 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MapMyDay" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<!-- res/values/themes.xml -->
+<resources>
+    <style name="Theme.MapMyDay" parent="Theme.MaterialComponents.Light.NoActionBar">
+>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/calendarDayBackground</item>
+        <item name="android:textColorPrimary">@color/calendarTextColor</item>
+
+        <item name="buttonStyle">@style/CalendarButtonStyle</item>
     </style>
 
-    <style name="Theme.MapMyDay" parent="Base.Theme.MapMyDay" />
+    <style name="CalendarButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/buttonBackground</item>
+        <item name="android:textColor">@color/calendarTextColor</item>
+    </style>
 </resources>

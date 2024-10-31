@@ -1,14 +1,17 @@
 package com.SCGIII.mapmyday;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Calendar;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView monthYearText;
     private GridView calendarGrid;
     private Map<String, List<Event>> eventsMap;
+    private ImageButton themeToggleButton;
+    private boolean isDarkModeEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,22 @@ public class MainActivity extends AppCompatActivity {
         calendarGrid = findViewById(R.id.calendarGrid);
         Button prevButton = findViewById(R.id.prevButton);
         Button nextButton = findViewById(R.id.nextButton);
+        themeToggleButton = findViewById(R.id.themeToggleButton);
+        SharedPreferences sharedPreferences = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        isDarkModeEnabled = sharedPreferences.getBoolean("isDarkModeEnabled", false);
+
+        if
+        (isDarkModeEnabled)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            themeToggleButton.setImageResource(R.drawable.sun);
+        }
+
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            themeToggleButton.setImageResource(R.drawable.moon);
+        }
 
         eventsMap = new HashMap<>();
         updateCalendar();
@@ -51,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
         calendarGrid.setOnItemClickListener((parent, view, position, ID) -> {
             String selectedDay = getSelectedDay(position);
             showEventAdderDialog(selectedDay);
+        });
+
+        themeToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleTheme();
+            }
         });
 
     }
@@ -76,6 +104,25 @@ public class MainActivity extends AppCompatActivity {
     private String getSelectedDay(int position) {
         List<String> days = getDaysInMonth(calendar);
         return days.get(position);
+    }
+
+    private void toggleTheme() {
+        // Toggle the theme
+        if (isDarkModeEnabled)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            isDarkModeEnabled = false;
+        }
+
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            isDarkModeEnabled = true;
+        }
+
+        SharedPreferences.Editor editor = getSharedPreferences("ThemePrefs", MODE_PRIVATE).edit();
+        editor.putBoolean("isDarkModeEnabled", isDarkModeEnabled);
+        editor.apply();
     }
 
     //updates the calendar. This method is called every time you click on a new month or load a new view
