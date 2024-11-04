@@ -45,18 +45,20 @@ public class CalendarAdapter extends BaseAdapter {
         TextView dayText = convertView.findViewById(R.id.dayText);
         String day = days.get(position);
 
+        dayText.setTextColor(context.getResources().getColor(R.color.calendarTextColor));
+
         // Check if the day is empty
         if (day.isEmpty()) {
             dayText.setText(""); // Set empty text for empty spaces
-            convertView.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray)); // Background for empty days
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarEmptyDayBackground)); // Background for empty days
         } else {
             dayText.setText(day);
-            convertView.setBackgroundColor(context.getResources().getColor(android.R.color.transparent)); // Reset background for actual days
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarDayBackground)); // Reset background for actual days
 
             // Check if there are events for this day
             String dateKey = "2023-10-" + day; // Example date format, adjust as needed
             if (eventsMap.containsKey(dateKey) && !eventsMap.get(dateKey).isEmpty()) {
-                convertView.setBackgroundColor(context.getResources().getColor(android.R.color.holo_blue_light)); // Highlight days with events
+                convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarEventDayBackground)); // Highlight days with events
             }
         }
 

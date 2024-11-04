@@ -2,9 +2,9 @@ package com.SCGIII.mapmyday;
 
 public class Event {
     private String title;
-    private String date; // Format: "YYYY-MM-DD"
-    private String startTime; // Format: "HH:mm"
-    private String endTime; // Format: "HH:mm"
+    private String date; // Use a suitable format (e.g., "YYYY-MM-DD")
+    private String startTime; // Use a suitable format (e.g., "HH:mm")
+    private String endTime;
     private String location;
     private String fromLocation;
 

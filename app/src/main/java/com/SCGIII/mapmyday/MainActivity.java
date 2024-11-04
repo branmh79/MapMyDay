@@ -1,19 +1,23 @@
 package com.SCGIII.mapmyday;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
     private TextView monthYearText;
     private GridView calendarGrid;
-    private Map<String, List<Event>> eventsMap; // Map to hold events by date
+    private Map<String, List<Event>> eventsMap;
+    private ImageButton themeToggleButton;
+    private boolean isDarkModeEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +42,26 @@ public class MainActivity extends AppCompatActivity {
         calendarGrid = findViewById(R.id.calendarGrid);
         Button prevButton = findViewById(R.id.prevButton);
         Button nextButton = findViewById(R.id.nextButton);
+        themeToggleButton = findViewById(R.id.themeToggleButton);
+        SharedPreferences sharedPreferences = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        isDarkModeEnabled = sharedPreferences.getBoolean("isDarkModeEnabled", false);
 
-        /*hash map (key-value pairs for events and event details). Can have multiple event details for
-          one event using ArrayList. Will implememnt later when we have backend finished*/
-        eventsMap = new HashMap<>(); // Initialize the events map
+        if
+        (isDarkModeEnabled)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            themeToggleButton.setImageResource(R.drawable.sun);
+        }
 
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            themeToggleButton.setImageResource(R.drawable.moon);
+        }
+
+        eventsMap = new HashMap<>();
         updateCalendar();
 
-        //calls to update calendar to prev month whenever prev button is pushed
         prevButton.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, -1);
             updateCalendar();
@@ -55,15 +73,17 @@ public class MainActivity extends AppCompatActivity {
             updateCalendar();
         });
 
-
-        /*parent is the whole grid view, view is the view clicked (day), position is position of the (day) item
-        , and ID is specific ID of item clicked. Is not used here, but it may come in handy later?
-        For ex: we might use ID to query item sin Cody's DB later*/
         calendarGrid.setOnItemClickListener((parent, view, position, ID) -> {
             String selectedDay = getSelectedDay(position);
             showEventAdderDialog(selectedDay);
         });
-    }
+
+        themeToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleTheme();
+            }
+        });
 
     //updates the calendar. This method is called every time you click on a new month or load a new view
     private void updateCalendar() {
@@ -99,10 +119,36 @@ public class MainActivity extends AppCompatActivity {
         return days.get(position);
     }
 
+    private void toggleTheme() {
+        // Toggle the theme
+        if (isDarkModeEnabled)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            isDarkModeEnabled = false;
+        }
 
-//this right here is the meat and potatoes of event adder feature
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            isDarkModeEnabled = true;
+        }
+
+        SharedPreferences.Editor editor = getSharedPreferences("ThemePrefs", MODE_PRIVATE).edit();
+        editor.putBoolean("isDarkModeEnabled", isDarkModeEnabled);
+        editor.apply();
+    }
+
+    //updates the calendar. This method is called every time you click on a new month or load a new view
+    private void updateCalendar() {
+        monthYearText.setText(String.format(Locale.getDefault(), "%tB %tY", calendar, calendar));
+        List<String> days = getDaysInMonth(calendar);
+        CalendarAdapter adapter = new CalendarAdapter(this, days, eventsMap);
+        calendarGrid.setAdapter(adapter);
+    }
+
+    //this right here is the meat and potatoes of event adder feature
     private void showEventAdderDialog(String selectedDay) {
-        //instanstiates alert dialog
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         //inflates from XML dialog_add_event. sets view
@@ -134,6 +180,17 @@ public class MainActivity extends AppCompatActivity {
             Event newEvent = new Event(title, dateKey, startTime, endTime, location, fromLocation);
             addEventToDay(dateKey, newEvent);
 
+            if(fromLocation.isEmpty() || location.isEmpty())
+            {
+                showTravelTimeDialog("Please enter an origin and destination location.");
+            }
+
+            else
+            {
+             // showTravelTimeDialog("Estimated travel time: 30 mins"); // hard-coded value for testing
+                directionsAPI.getTravelTime(fromLocation, location);  // call to api
+            }
+
             dialog.dismiss();
         });
 
@@ -145,6 +202,51 @@ public class MainActivity extends AppCompatActivity {
             eventsMap.put(date, new ArrayList<>());
         }
         eventsMap.get(date).add(event);
+    }
+
+    DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
+        @Override
+        public void onDirectionsReceived(final String travelTime) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showTravelTimeDialog(travelTime);
+                }
+            });
+        }
+
+        @Override
+        public void onDirectionsError(final String error) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showTravelTimeDialog("Error: " + error);
+                }
+            });
+        }
+    });
+
+    private void showTravelTimeDialog(String travelTime) {
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.travel_time_display, null);
+
+        TextView travelTimeTextView = dialogView.findViewById(R.id.travelTimeTextView);
+        Button closeButton = dialogView.findViewById(R.id.closeButton);
+
+        travelTimeTextView.setText(travelTime != null ? travelTime: "Unable to retrieve travel time");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 }
 
