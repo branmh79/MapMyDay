@@ -1,8 +1,5 @@
 package com.SCGIII.mapmyday;
 
-//import androidx.room.Entity;
-//import androidx.room.PrimaryKey;
-
 public class Event {
     private String title;
     private String date; // Use a suitable format (e.g., "YYYY-MM-DD")
@@ -30,4 +27,3 @@ public class Event {
 
     //test test github change test
 }
-

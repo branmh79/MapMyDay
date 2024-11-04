@@ -21,6 +21,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    //instantiating variables
     private Calendar calendar;
     private TextView monthYearText;
     private GridView calendarGrid;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //gets the layouts from activity_main.xml
         setContentView(R.layout.activity_main);
 
         calendar = Calendar.getInstance();
@@ -81,8 +85,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    //updates the calendar. This method is called every time you click on a new month or load a new view
+    private void updateCalendar() {
+        monthYearText.setText(String.format(Locale.getDefault(), "%tB %tY", calendar, calendar));
+        List<String> days = getDaysInMonth(calendar);
+        CalendarAdapter adapter = new CalendarAdapter(this, days, eventsMap);
+        calendarGrid.setAdapter(adapter);
     }
 
+
+    /*utilizng the calendar import in java, implements the correct formatting for days in a month
+    for example, not every month starts on a Sunday. Sometime syou have blank days at the start of the week.*/
     private List<String> getDaysInMonth(Calendar calendar) {
         List<String> days = new ArrayList<>();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -235,6 +248,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
 
