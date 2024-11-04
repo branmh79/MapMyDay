@@ -1,0 +1,72 @@
+<!-- allows the action button to be displayed on top of other-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/monthYearText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/prevButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Previous"/>
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"/>
+        </LinearLayout>
+
+        <!-- Adding the horizontal layout for the days of the week -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView android:text="S" style="@style/CalendarDayLabel"/>
+            <TextView android:text="M" style="@style/CalendarDayLabel"/>
+            <TextView android:text="T" style="@style/CalendarDayLabel"/>
+            <TextView android:text="W" style="@style/CalendarDayLabel"/>
+            <TextView android:text="T" style="@style/CalendarDayLabel"/>
+            <TextView android:text="F" style="@style/CalendarDayLabel"/>
+            <TextView android:text="S" style="@style/CalendarDayLabel"/>
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/calendarGrid"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:numColumns="7"/>
+
+    </LinearLayout>
+<!--Creating the view for the add button-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addEventButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:contentDescription="Add Event"
+        android:background="@android:color/transparent"/>
+
+</FrameLayout>
