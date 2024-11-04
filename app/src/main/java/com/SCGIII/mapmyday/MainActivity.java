@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import com.google.firebase.FirebaseApp; // Imported this line
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
@@ -35,15 +36,26 @@ public class MainActivity extends AppCompatActivity {
     // Firebase database reference
     private DatabaseReference databaseReference;
 
-    @Override
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase explicitly
+        FirebaseApp.initializeApp(this);
+
+        // Test Firebase initialization
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            Toast.makeText(this, "Firebase initialization failed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Firebase initialized successfully", Toast.LENGTH_SHORT).show();
+        }
 
         // Gets the layouts from activity_main.xml
         setContentView(R.layout.activity_main);
 
         // Initialize Firebase Database
         databaseReference = FirebaseDatabase.getInstance().getReference("events");
+
 
         calendar = Calendar.getInstance();
         monthYearText = findViewById(R.id.monthYearText);
