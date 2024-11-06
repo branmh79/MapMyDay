@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "148180196285",
+    "firebase_url": "https://mapmyday-fb226-default-rtdb.firebaseio.com",
     "project_id": "mapmyday-fb226",
-    "storage_bucket": "mapmyday-fb226.appspot.com"
+    "storage_bucket": "mapmyday-fb226.firebasestorage.app"
   },
   "client": [
     {
