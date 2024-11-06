@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.application")
-    id("com.google.gms.google-services") // Apply without "apply false"
+    alias(libs.plugins.android.application)
+    id("com.google.gms.google-services") // Apply Google Services plugin
 }
 
 android {
@@ -18,14 +18,15 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                file("proguard-rules.pro")
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,7 +35,6 @@ android {
 
 dependencies {
     implementation(libs.okhttp)
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -44,7 +44,11 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     // Firebase dependencies
-    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-    implementation("com.google.firebase:firebase-database") // Firebase Realtime Database
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1")) // Firebase BOM
+    implementation("com.google.firebase:firebase-database-ktx") // Firebase Realtime Database with Kotlin Extensions
+    implementation("com.google.firebase:firebase-analytics") // Firebase Analytics
+
+    // AndroidX Annotations
+    implementation ("androidx.annotation:annotation:1.1.0")
+
 }
