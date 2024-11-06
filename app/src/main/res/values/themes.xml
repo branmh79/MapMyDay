@@ -1,0 +1,18 @@
+<!-- res/values/themes.xml -->
+<resources>
+    <style name="Theme.MapMyDay" parent="Theme.MaterialComponents.Light.NoActionBar">
+>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/calendarDayBackground</item>
+        <item name="android:textColorPrimary">@color/calendarTextColor</item>
+
+        <item name="buttonStyle">@style/CalendarButtonStyle</item>
+    </style>
+
+    <style name="CalendarButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/buttonBackground</item>
+        <item name="android:textColor">@color/calendarTextColor</item>
+    </style>
+</resources>
