@@ -1,6 +1,7 @@
 package com.SCGIII.mapmyday;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,22 +50,30 @@ public class CalendarAdapter extends BaseAdapter {
         TextView dayText = convertView.findViewById(R.id.dayText);
         String day = days.get(position);
 
-        dayText.setTextColor(context.getResources().getColor(R.color.calendarTextColor));
+        // Detect if in night mode
+        boolean isNightMode = (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
 
+        // Set background color for empty cells
         if (day.isEmpty()) {
+            convertView.setBackgroundColor(isNightMode ?
+                    context.getResources().getColor(R.color.calendarEmptyDayDarkBackground) :
+                    context.getResources().getColor(R.color.calendarEmptyDayBackground));
             dayText.setText("");
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarEmptyDayBackground)); // Background for empty days
         } else {
+            // Background color for regular days
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarDayBackground));
             dayText.setText(day);
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarDayBackground)); // Reset background for actual days
 
+            // Highlight days with events if applicable
             String dateKey = String.format("%d-%02d-%02d", year, month, Integer.parseInt(day));
-
             if (eventsMap.containsKey(dateKey) && !eventsMap.get(dateKey).isEmpty()) {
-                convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarEventDayBackground)); // Highlight days with events
+                convertView.setBackgroundColor(context.getResources().getColor(R.color.calendarEventDayBackground));
             }
         }
 
         return convertView;
     }
+
+
+
 }

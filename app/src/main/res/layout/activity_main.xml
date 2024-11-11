@@ -4,89 +4,170 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Main Content Layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="80dp"> <!-- Padding to avoid overlap with bottom bar -->
 
-        <TextView
-            android:id="@+id/monthYearText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_gravity="center"
-            android:textColor="@color/monthTextColor"/>
-
+        <!-- Top Row with App Icon, Month-Year Text, and Navigation Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp">
 
-            <Button
+            <!-- App Icon on the Left -->
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/app_icon"
+                android:contentDescription="App Icon"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Month-Year Text in the Center -->
+            <TextView
+                android:id="@+id/monthYearText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/monthTextColor" />
+
+            <!-- Previous and Next Buttons on the Right -->
+            <ImageButton
                 android:id="@+id/prevButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Previous"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_arrow_left"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Previous Month"
+                android:layout_marginEnd="4dp" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/nextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Next"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_arrow_right"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Next Month" />
         </LinearLayout>
 
+        <!-- Divider Bar Below the Top Section -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/dividerColor"
+            android:layout_marginVertical="4dp" />
+
+        <!-- Days of Week Labels -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
 
-            <TextView android:text="S" style="@style/CalendarDayLabel"/>
-            <TextView android:text="M" style="@style/CalendarDayLabel"/>
-            <TextView android:text="T" style="@style/CalendarDayLabel"/>
-            <TextView android:text="W" style="@style/CalendarDayLabel"/>
-            <TextView android:text="T" style="@style/CalendarDayLabel"/>
-            <TextView android:text="F" style="@style/CalendarDayLabel"/>
-            <TextView android:text="S" style="@style/CalendarDayLabel"/>
+            <TextView android:text="S" style="@style/CalendarDayLabel" />
+            <TextView android:text="M" style="@style/CalendarDayLabel" />
+            <TextView android:text="T" style="@style/CalendarDayLabel" />
+            <TextView android:text="W" style="@style/CalendarDayLabel" />
+            <TextView android:text="T" style="@style/CalendarDayLabel" />
+            <TextView android:text="F" style="@style/CalendarDayLabel" />
+            <TextView android:text="S" style="@style/CalendarDayLabel" />
         </LinearLayout>
 
+        <!-- Calendar GridView for Days -->
         <GridView
             android:id="@+id/calendarGrid"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="7"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Divider Bar Below the Calendar Grid -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/dividerColor"
+            android:layout_marginVertical="4dp" />
+
+        <!-- Scrollable Events Section Below the Calendar -->
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:numColumns="7"/>
+            android:fillViewport="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/eventRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:background="?attr/android:windowBackground"
+                android:elevation="8dp"
+                android:visibility="gone"/>
+        </ScrollView>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/eventRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:padding="16dp"
-        android:layout_gravity="center"
-        android:background="@color/white"
-        android:elevation="8dp"
-        android:visibility="gone"/>
 
-    <ImageButton
-        android:id="@+id/themeToggleButton"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_gravity="bottom|start"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Toggle Theme"
-        android:scaleType="centerInside"/>
-
+    <!-- Main Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addEventButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|top"
+        android:contentDescription="Open Menu"
+        android:backgroundTint="@color/buttonBackground"
+        android:tint="@color/calendarTextColor"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:srcCompat="@android:drawable/ic_input_add"
+        android:padding="0dp" /> <!-- Reduce padding to make icon appear larger -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="90dp"
+        android:src="@drawable/ic_add_event"
         android:contentDescription="Add Event"
-        android:background="@android:color/transparent"/>
+        android:visibility="gone"
+        android:backgroundTint="@color/buttonBackground"
+        android:tint="@color/calendarTextColor"
+        android:padding="0dp" /> <!-- Set padding to 0dp -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="150dp"
+        android:src="@drawable/ic_favorite"
+        android:contentDescription="Add Favorite Location"
+        android:visibility="gone"
+        android:backgroundTint="@color/buttonBackground"
+        android:tint="@color/calendarTextColor"
+        android:padding="0dp" /> <!-- Set padding to 0dp -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabToggleTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="210dp"
+        android:src="@drawable/moon"
+        android:contentDescription="Toggle Theme"
+        android:visibility="gone"
+        android:backgroundTint="@color/buttonBackground"
+        android:tint="@color/calendarTextColor"
+        android:padding="0dp" />
 </FrameLayout>

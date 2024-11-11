@@ -7,10 +7,15 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="calendarEmptyDayDarkBackground">#D3D3D3</color>
     <color name="calendarEmptyDayBackground">#333333</color>
     <color name="calendarDayBackground">#121212</color>
     <color name="calendarEventDayBackground">#5A9BD4</color>
     <color name="calendarTextColor">#FFFFFF</color>
-    <color name="buttonBackground">#6200EE</color>
+    <color name="buttonBackground">#BB86FC</color>
+    <color name="bottomBarBackground">#333333</color>
+    <color name="eventDisplayText">#D3D3D3</color>
     <color name="monthTextColor">#FFFFFF</color>
+    <color name="dividerColor">#FFFFFF</color> <!-- White for dark mode -->
+
 </resources>
