@@ -8,9 +8,14 @@
     <color name="black">#000000</color>
 
     <color name="calendarEventDayBackground">#ADD8E6</color>
-    <color name="calendarEmptyDayBackground">#F0F0F0</color>
+    <color name="calendarEmptyDayDarkBackground">#000000</color>
+    <color name="calendarEmptyDayBackground">#D3D3D3</color>
     <color name="calendarDayBackground">#FFFFFF</color>
     <color name="calendarTextColor">#000000</color>
     <color name="buttonBackground">#6200EE</color>
+    <color name="bottomBarBackground">#FFFFFF</color>
+    <color name="eventDisplayText">#141414</color>
     <color name="monthTextColor">#000000</color>
+    <color name="dividerColor">#000000</color> <!-- Black for light mode -->
+
 </resources>

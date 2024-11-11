@@ -11,6 +11,8 @@ public class Event {
     private String endTime;
     private String location;
     private String fromLocation;
+    private String travelTime = "Calculating...";
+    private String notes;
 
     // No-argument constructor required by Firebase
     public Event() {
@@ -18,14 +20,25 @@ public class Event {
         this.date = "";   // Assign a default non-null value
     }
 
+    public String getTravelTime(){
+        return travelTime != null ? travelTime : "Calculating...";
+    }
+
+    public void setTravelTime(String travelTime)
+    {
+        this.travelTime = travelTime;
+    }
+
     // Constructor with parameters
-    public Event(@NonNull String title, @NonNull String date, String startTime, String endTime, String location, String fromLocation) {
+    public Event(@NonNull String title, @NonNull String date, String startTime, String endTime, String location, String fromLocation, String notes) {
         this.title = title != null ? title : "";
         this.date = date != null ? date : "";
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.fromLocation = fromLocation;
+        this.travelTime = "Calculating...";
+        this.notes = notes;
     }
 
     // Getters
@@ -55,6 +68,8 @@ public class Event {
         return fromLocation;
     }
 
+    public String getNotes() { return notes; }
+
     // Setters
     public void setTitle(@NonNull String title) {
         this.title = title != null ? title : "";
@@ -78,6 +93,10 @@ public class Event {
 
     public void setFromLocation(String fromLocation) {
         this.fromLocation = fromLocation;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     // toString method for debugging

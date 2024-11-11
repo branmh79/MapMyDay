@@ -21,31 +21,44 @@
         android:id="@+id/eventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Event Title" />
+        android:hint="Event Title"
+        android:textColor="@color/black"/>
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/eventLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Event Location" />
+        android:hint="Event Location"
+        android:textColor="@color/black"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/eventFromLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="From Location"
+        android:textColor="@color/black"/>
 
     <EditText
         android:id="@+id/eventStartTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Start Time (HH:mm)" />
+        android:hint="Start Time (HH:mm)"
+        android:textColor="@color/black"/>
 
     <EditText
         android:id="@+id/eventEndTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="End Time (HH:mm)" />
+        android:hint="End Time (HH:mm)"
+        android:textColor="@color/black"/>
 
     <EditText
-        android:id="@+id/eventFromLocation"
+        android:id="@+id/eventNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="From Location" />
+        android:hint="Enter notes (optional)"
+        android:inputType="textMultiLine"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/addEventButton"

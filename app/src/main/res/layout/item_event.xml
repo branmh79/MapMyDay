@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@color/calendarDayBackground">
+
 
     <TextView
         android:id="@+id/currentDateTextView"
@@ -11,38 +13,63 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="italic"
-        android:textColor="@android:color/darker_gray"
-        android:visibility="gone"/> <!-- Initially hidden; shown dynamically -->
+        android:textColor="@color/eventDisplayText"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/eventDisplayText"/>
 
     <TextView
         android:id="@+id/startTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="@color/eventDisplayText"/>
 
     <TextView
         android:id="@+id/endTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="@color/eventDisplayText"/>
 
     <TextView
         android:id="@+id/locationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="@color/eventDisplayText"/>
 
     <TextView
         android:id="@+id/fromLocationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="@color/eventDisplayText"/>
+
+    <TextView
+        android:id="@+id/eventNotesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notes:"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textColor="@color/eventDisplayText"/>
+
+    <TextView
+        android:id="@+id/travelTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:text="Travel Time: Calculating..."
+        android:textColor="@android:color/holo_orange_dark"/>
+
+
 
 </LinearLayout>
