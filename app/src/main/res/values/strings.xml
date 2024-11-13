@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MapMyDay</string>
+    <string name="widget_name">Reminder Widget</string>
 </resources>

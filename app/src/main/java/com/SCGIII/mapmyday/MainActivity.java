@@ -2,6 +2,9 @@ package com.SCGIII.mapmyday;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -226,33 +229,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Load events from Firebase
-    private void loadEvents() {
+    protected void loadEvents() {
         eventsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 eventsMap.clear();
                 for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
-                    String dateKey = dateSnapshot.getKey() != null ? dateSnapshot.getKey() : ""; // Default to empty string
+                    String dateKey = dateSnapshot.getKey() != null ? dateSnapshot.getKey() : "";
                     List<Event> eventsList = new ArrayList<>();
                     for (DataSnapshot eventSnapshot : dateSnapshot.getChildren()) {
                         Event event = eventSnapshot.getValue(Event.class);
                         if (event != null) {
-                            eventsList.add(sanitizeEvent(event)); // Ensure non-null fields
+                            eventsList.add(event);
                         }
                     }
                     eventsMap.put(dateKey, eventsList);
                 }
+
+                // Calculate the next event
+                Event nextEvent = getNextEvent();
+                saveNextEventToPreferences(nextEvent);
+
+                // Notify widget to refresh
+                updateWidget();
+
                 updateCalendar();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println("Error loading events: " + error.getMessage());
-                Toast.makeText(MainActivity.this, "Failed to load events. Please check your connection.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Failed to load events.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private void updateWidget() {
+        Intent intent = new Intent(this, ReminderWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        // Send broadcast to update all widgets
+        int[] ids = AppWidgetManager.getInstance(this)
+                .getAppWidgetIds(new ComponentName(this, ReminderWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
+    }
+
 
     // Helper method to ensure Event objects have non-null values
     private Event sanitizeEvent(Event event) {
@@ -466,22 +487,94 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showEventDialog(List<Event> events) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        StringBuilder eventInfo = new StringBuilder();
 
-        for (Event event : events) {
-            eventInfo.append("Title: ").append(event.getTitle()).append("\n");
-            eventInfo.append("Date: ").append(event.getDate()).append("\n");
-            eventInfo.append("Start Time: ").append(event.getStartTime()).append("\n");
-            eventInfo.append("End Time: ").append(event.getEndTime()).append("\n");
-            eventInfo.append("Location: ").append(event.getLocation()).append("\n");
-            eventInfo.append("From: ").append(event.getFromLocation()).append("\n\n");
+    private void saveNextEventToPreferences(Event nextEvent) {
+        SharedPreferences preferences = getSharedPreferences("NextEventPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if (nextEvent != null) {
+            String leaveTime = calculateLeaveTime(nextEvent.getStartTime(), nextEvent.getTravelTime());
+            editor.putString("eventTitle", nextEvent.getTitle());
+            editor.putString("leaveTime", String.format("Leave By: %s", leaveTime));
+        } else {
+            editor.putString("eventTitle", "No Upcoming Events");
+            editor.putString("leaveTime", "Enjoy your free time!");
         }
 
-        builder.setTitle("Events for the Day")
-                .setMessage(eventInfo.toString())
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .show();
+        editor.apply();
     }
+
+
+
+    public String calculateLeaveTime(String startTime, String travelTime) {
+        try {
+            // Parse startTime (HH:mm)
+            String[] timeParts = startTime.split(":");
+            int eventHour = Integer.parseInt(timeParts[0]);
+            int eventMinute = Integer.parseInt(timeParts[1]);
+
+            // Convert event start time to minutes
+            int eventStartMinutes = (eventHour * 60) + eventMinute;
+
+            // Parse travelTime (e.g., "15 mins")
+            String[] travelParts = travelTime.split(" ");
+            int travelMinutes = Integer.parseInt(travelParts[0]);
+
+            // Calculate leave time in minutes
+            int leaveTimeMinutes = eventStartMinutes - travelMinutes;
+
+            // Convert leave time back to HH:mm
+            int leaveHour = leaveTimeMinutes / 60;
+            int leaveMinute = leaveTimeMinutes % 60;
+
+            // Format time to HH:mm
+            return String.format(Locale.getDefault(), "%02d:%02d", leaveHour, leaveMinute);
+        } catch (Exception e) {
+            Log.e("CalculateLeaveTime", "Error parsing time: " + e.getMessage());
+            return "Error calculating leave time";
+        }
+    }
+
+    public Event getNextEvent() {
+        long currentTimeMillis = System.currentTimeMillis();
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(currentTimeMillis);
+
+        Event nextEvent = null;
+        long smallestDifference = Long.MAX_VALUE;
+
+        for (List<Event> events : eventsMap.values()) {
+            for (Event event : events) {
+                try {
+                    // Parse event date and start time
+                    String[] dateParts = event.getDate().split("-");
+                    String[] timeParts = event.getStartTime().split(":");
+
+                    int eventYear = Integer.parseInt(dateParts[0]);
+                    int eventMonth = Integer.parseInt(dateParts[1]) - 1; // Calendar months are 0-based
+                    int eventDay = Integer.parseInt(dateParts[2]);
+                    int eventHour = Integer.parseInt(timeParts[0]);
+                    int eventMinute = Integer.parseInt(timeParts[1]);
+
+                    // Create a Calendar object for the event
+                    Calendar eventTime = Calendar.getInstance();
+                    eventTime.set(eventYear, eventMonth, eventDay, eventHour, eventMinute);
+
+                    // Calculate time difference
+                    long timeDifference = eventTime.getTimeInMillis() - currentTimeMillis;
+
+                    // Check if this event is closer than the current nextEvent
+                    if (timeDifference > 0 && timeDifference < smallestDifference) {
+                        smallestDifference = timeDifference;
+                        nextEvent = event;
+                    }
+                } catch (Exception e) {
+                    Log.e("GetNextEvent", "Error parsing event: " + e.getMessage());
+                }
+            }
+        }
+
+        return nextEvent;
+    }
+
 }
