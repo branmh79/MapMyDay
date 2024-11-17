@@ -70,6 +70,14 @@
         android:text="Travel Time: Calculating..."
         android:textColor="@android:color/holo_orange_dark"/>
 
-
+    <TextView
+        android:id="@+id/directionsLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Directions"
+        android:textColor="@color/linkColor"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true" />
 
 </LinearLayout>
