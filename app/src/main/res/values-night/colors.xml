@@ -18,7 +18,11 @@
     <color name="monthTextColor">#FFFFFF</color>
     <color name="dividerColor">#FFFFFF</color> <!-- White for dark mode -->
 
+    <color name="arrowColor">#FFFFFF</color>
+
+
     <color name ="linkColor">#0000EE</color>
     <color name="widgetBackground">#15202B</color>
+
 
 </resources>
