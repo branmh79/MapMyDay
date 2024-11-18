@@ -17,5 +17,6 @@
     <color name="eventDisplayText">#141414</color>
     <color name="monthTextColor">#000000</color>
     <color name="dividerColor">#000000</color> <!-- Black for light mode -->
+    <color name="arrowColor">#000000</color>
 
 </resources>

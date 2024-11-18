@@ -49,6 +49,7 @@
                 android:src="@drawable/ic_arrow_left"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Previous Month"
+                app:tint="@color/arrowColor"
                 android:layout_marginEnd="4dp" />
 
             <ImageButton
@@ -56,6 +57,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_arrow_right"
+                app:tint="@color/arrowColor"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Next Month" />
         </LinearLayout>
