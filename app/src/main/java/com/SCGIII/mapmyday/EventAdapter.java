@@ -1,5 +1,7 @@
 package com.SCGIII.mapmyday;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,10 +96,43 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 holder.travelTimeTextView.setText("Travel Time: Unavailable");
             }
         }
+
+        // Set up the Directions link
+        if (event.getFromLocation() != null && !event.getFromLocation().isEmpty() &&
+                event.getLocation() != null && !event.getLocation().isEmpty()) {
+            String fromAddress = locationNameToAddress.containsKey(event.getFromLocation())
+                    ? locationNameToAddress.get(event.getFromLocation())  // Use address for favorite location
+                    : event.getFromLocation(); // Use raw input for non-favorite location
+
+            String toAddress = locationNameToAddress.containsKey(event.getLocation())
+                    ? locationNameToAddress.get(event.getLocation()) // Use address for favorite location
+                    : event.getLocation(); // Use raw input for non-favorite location
+
+            if (fromAddress != null && !fromAddress.isEmpty() && toAddress != null && !toAddress.isEmpty()) {
+                holder.directionsLink.setVisibility(View.VISIBLE);
+                holder.directionsLink.setOnClickListener(v -> {
+                    // Create a Google Maps directions URI
+                    Uri uri = Uri.parse("https://www.google.com/maps/dir/?api=1&origin=" +
+                            Uri.encode(fromAddress) + "&destination=" + Uri.encode(toAddress));
+
+                    // Create an intent to open Google Maps or a browser
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps"); // Prefer Google Maps app
+                    if (intent.resolveActivity(holder.directionsLink.getContext().getPackageManager()) != null) {
+                        holder.directionsLink.getContext().startActivity(intent);
+                    } else {
+                        // Fallback to a browser if Google Maps is unavailable
+                        intent.setPackage(null);
+                        holder.directionsLink.getContext().startActivity(intent);
+                    }
+                });
+            } else {
+                holder.directionsLink.setVisibility(View.GONE);
+            }
+        } else {
+            holder.directionsLink.setVisibility(View.GONE);
+        }
     }
-
-
-
 
 
 
@@ -107,7 +142,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView currentDateTextView, titleTextView, startTimeTextView, endTimeTextView, locationTextView, fromLocationTextView, travelTimeTextView, notesTextView;
+        TextView currentDateTextView, titleTextView, startTimeTextView, endTimeTextView,
+                locationTextView, fromLocationTextView, travelTimeTextView, notesTextView,
+                directionsLink;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +156,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             fromLocationTextView = itemView.findViewById(R.id.fromLocationTextView);
             travelTimeTextView = itemView.findViewById(R.id.travelTimeTextView);
             notesTextView = itemView.findViewById(R.id.eventNotesTextView);
+            directionsLink = itemView.findViewById(R.id.directionsLink);
         }
     }
 }

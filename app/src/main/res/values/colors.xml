@@ -19,4 +19,9 @@
     <color name="dividerColor">#000000</color> <!-- Black for light mode -->
     <color name="arrowColor">#000000</color>
 
+    <color name ="linkColor">#0000EE</color>
+    <color name="widgetBackground">#15202B</color>
+
+
+
 </resources>
