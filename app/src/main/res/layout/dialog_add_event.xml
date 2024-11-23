@@ -52,20 +52,6 @@
         android:hint="End Time (HH:mm)"
         android:textColor="@color/black"/>
 
-    <EditText
-        android:id="@+id/eventNotes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter notes (optional)"
-        android:inputType="textMultiLine"
-        android:textColor="@color/black"/>
-
-    <Button
-        android:id="@+id/addEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Event" />
-
     <!-- TextView that is used for displaying the date in the event adder
     <TextView
         android:id="@+id/eventDate"
@@ -76,75 +62,103 @@
         android:padding="8dp"
         android:text="Date" /> -->
 
-    <AutoCompleteTextView
-        android:id="@+id/recurrenceInterval"
+    <Spinner
+        android:id="@+id/recurrenceFrequency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Recurrence Interval (e.g., 1)"
-        android:inputType="number" />
+        android:prompt="@string/recurrence_type_prompt" />
+
+    <LinearLayout
+        android:id="@+id/daysOfWeekLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkSunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sun" />
+
+            <CheckBox
+                android:id="@+id/checkMonday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mon" />
+
+            <CheckBox
+                android:id="@+id/checkTuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tues" />
+
+            <CheckBox
+                android:id="@+id/checkWednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wed" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <CheckBox
+                android:id="@+id/checkThursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thurs" />
+
+            <CheckBox
+                android:id="@+id/checkFriday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fri" />
+
+            <CheckBox
+                android:id="@+id/checkSaturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sat" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/recurrenceEndDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Recurrence End Date"
-        android:padding="10dp" />
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/black"
+        android:visibility="gone" />
 
-    <AutoCompleteTextView
-        android:id="@+id/recurrenceFrequency"
+    <!-- Waiting to make sure it works before adding to strings.xml -->
+
+    <EditText
+        android:id="@+id/eventNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Recurrence Frequency"
-        android:inputType="text" />
+        android:hint="Enter notes (optional)"
+        android:inputType="textMultiLine"
+        android:textColor="@color/black" />
 
-    <LinearLayout
-        android:id="@+id/daysOfWeekLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/addEventButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_marginTop="8dp">
+        android:text="Add Event" />
 
-        <CheckBox
-            android:id="@+id/checkSunday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sun" />
-
-        <CheckBox
-            android:id="@+id/checkMonday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mon" />
-
-        <CheckBox
-            android:id="@+id/checkTuesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tues" />
-
-        <CheckBox
-            android:id="@+id/checkWednesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wed" />
-
-        <CheckBox
-            android:id="@+id/checkThursday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thurs" />
-
-        <CheckBox
-            android:id="@+id/checkFriday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fri" />
-
-        <CheckBox
-            android:id="@+id/checkSaturday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sat" />
-    </LinearLayout>
 </LinearLayout>

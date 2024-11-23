@@ -53,7 +53,7 @@ public class Event {
         this.fromLocation = fromLocation;
         this.travelTime = "Calculating...";
         this.notes = notes;
-        this.recurrenceFrequency = recurrenceFrequency != null ? recurrenceFrequency : "None";
+        this.recurrenceFrequency = recurrenceFrequency != null ? recurrenceFrequency.toUpperCase() : "NONE";
         this.recurrenceInterval = recurrenceInterval;
         this.recurrenceEndDate = recurrenceEndDate != null ? recurrenceEndDate : "";
         this.recurrenceDaysOfWeek = recurrenceDaysOfWeek != null ? recurrenceDaysOfWeek : new ArrayList<>();
