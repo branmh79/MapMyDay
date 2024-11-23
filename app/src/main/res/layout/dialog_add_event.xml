@@ -75,4 +75,76 @@
         android:layout_gravity="center"
         android:padding="8dp"
         android:text="Date" /> -->
+
+    <AutoCompleteTextView
+        android:id="@+id/recurrenceInterval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Recurrence Interval (e.g., 1)"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/recurrenceEndDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Recurrence End Date"
+        android:padding="10dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/recurrenceFrequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Recurrence Frequency"
+        android:inputType="text" />
+
+    <LinearLayout
+        android:id="@+id/daysOfWeekLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginTop="8dp">
+
+        <CheckBox
+            android:id="@+id/checkSunday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sun" />
+
+        <CheckBox
+            android:id="@+id/checkMonday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mon" />
+
+        <CheckBox
+            android:id="@+id/checkTuesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tues" />
+
+        <CheckBox
+            android:id="@+id/checkWednesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wed" />
+
+        <CheckBox
+            android:id="@+id/checkThursday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thurs" />
+
+        <CheckBox
+            android:id="@+id/checkFriday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fri" />
+
+        <CheckBox
+            android:id="@+id/checkSaturday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sat" />
+    </LinearLayout>
 </LinearLayout>

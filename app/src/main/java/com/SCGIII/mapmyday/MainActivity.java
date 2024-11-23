@@ -13,9 +13,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +34,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -235,15 +241,23 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 eventsMap.clear();
                 for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
-                    String dateKey = dateSnapshot.getKey() != null ? dateSnapshot.getKey() : "";
-                    List<Event> eventsList = new ArrayList<>();
+                    //String dateKey = dateSnapshot.getKey() != null ? dateSnapshot.getKey() : "";
+                    //List<Event> eventsList = new ArrayList<>();
                     for (DataSnapshot eventSnapshot : dateSnapshot.getChildren()) {
                         Event event = eventSnapshot.getValue(Event.class);
                         if (event != null) {
-                            eventsList.add(event);
+                            if (event.getRecurrenceFrequency() != null && !event.getRecurrenceFrequency().equalsIgnoreCase("None")){
+                                List<String> occurrenceDates = calculateOccurrences(event);
+                                for (String occurrenceDate : occurrenceDates) {
+                                    addEventToMap(occurrenceDate, event);
+                                }
+                            } else {
+                                addEventToMap(event.getDate(), event);
+                                //eventsList.add(event);
+                            }
                         }
                     }
-                    eventsMap.put(dateKey, eventsList);
+                    //eventsMap.put(dateKey, eventsList);
                 }
 
                 // Calculate the next event
@@ -351,6 +365,55 @@ public class MainActivity extends AppCompatActivity {
         EditText eventNotes = dialogView.findViewById(R.id.eventNotes);
         Button addEventButton = dialogView.findViewById(R.id.addEventButton);
         AlertDialog dialog = builder.create();
+        // Recurrence fields here
+        AutoCompleteTextView recurrenceFrequency = dialogView.findViewById(R.id.recurrenceFrequency);
+        EditText recurrenceInterval = dialogView.findViewById(R.id.recurrenceInterval);
+        TextView recurrenceEndDate = dialogView.findViewById(R.id.recurrenceEndDate);
+        LinearLayout daysOfWeekLayout = dialogView.findViewById(R.id.daysOfWeekLayout);
+        // Initializing the checkboxes
+        CheckBox checkSunday = dialogView.findViewById(R.id.checkSunday);
+        CheckBox checkMonday = dialogView.findViewById(R.id.checkMonday);
+        CheckBox checkTuesday = dialogView.findViewById(R.id.checkTuesday);
+        CheckBox checkWednesday = dialogView.findViewById(R.id.checkWednesday);
+        CheckBox checkThursday = dialogView.findViewById(R.id.checkThursday);
+        CheckBox checkFriday = dialogView.findViewById(R.id.checkFriday);
+        CheckBox checkSaturday = dialogView.findViewById(R.id.checkSaturday);
+        // Setting up the recurrency options
+        String[] frequencies = new String[]{"NONE", "DAILY", "WEEKLY", "BI-WEEKLY", "MONTHLY"};
+        ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, frequencies);
+        recurrenceFrequency.setAdapter(frequencyAdapter);
+        // Set the default
+        recurrenceFrequency.setText("NONE");
+        // Visibility based on which one selected
+        recurrenceFrequency.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedFrequency = frequencyAdapter.getItem(position);
+            if ("WEEKLY".equalsIgnoreCase(selectedFrequency) || "BI-WEEKLY".equalsIgnoreCase(selectedFrequency)){
+                daysOfWeekLayout.setVisibility(View.VISIBLE);
+                recurrenceInterval.setVisibility(View.GONE);
+            } else if ("MONTHLY".equalsIgnoreCase(selectedFrequency)){
+                daysOfWeekLayout.setVisibility(View.GONE);
+                recurrenceInterval.setVisibility(View.VISIBLE);
+            } else {
+                daysOfWeekLayout.setVisibility(View.GONE);
+                recurrenceInterval.setVisibility(View.GONE);
+            }
+        });
+        // Date picker for the end date of the recurrence
+        Calendar recurrenceEndCalendar = Calendar.getInstance();
+        recurrenceEndDate.setOnClickListener(v -> {
+            int year = recurrenceEndCalendar.get(Calendar.YEAR);
+            int month = recurrenceEndCalendar.get(Calendar.MONTH);
+            int day = recurrenceEndCalendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDayOfMonth) -> {
+                recurrenceEndCalendar.set(Calendar.YEAR, selectedYear);
+                recurrenceEndCalendar.set(Calendar.MONTH, selectedMonth);
+                recurrenceEndCalendar.set(Calendar.DAY_OF_MONTH, selectedDayOfMonth);
+                String formattedDate = String.format(Locale.getDefault(), "%1$tY-%1$tm-%1$td", recurrenceEndCalendar);
+                recurrenceEndDate.setText(formattedDate);
+            }, year, month, day);
+            datePickerDialog.show();
+        });
 
         // Set up AutoCompleteTextView adapters for favorite locations
         List<String> locationNames = new ArrayList<>(locationNameToAddress.keySet());
@@ -390,11 +453,42 @@ public class MainActivity extends AppCompatActivity {
             String startTime = eventStartTime.getText().toString().trim();
             String endTime = eventEndTime.getText().toString().trim();
             String notes = eventNotes.getText().toString().trim();
+            //Recurrence
+            String frequencyInput = recurrenceFrequency.getText().toString().trim();
+            int interval = 1;
+
+            if ("Bi-Weekly".equalsIgnoreCase(frequencyInput)){
+                frequencyInput = "WEEKLY";
+                interval = 2;
+            } else if (!recurrenceInterval.getText().toString().isEmpty()){
+                interval = Integer.parseInt(recurrenceInterval.getText().toString().trim());
+            }
+            frequencyInput = frequencyInput.toUpperCase();
+            String recurrenceEndDateInput = recurrenceEndDate.getText().toString().trim();
+            List<String> selectedDaysOfWeek = new ArrayList<>();
+            if ("WEEKLY".equalsIgnoreCase(frequencyInput)){
+                if (checkSunday.isChecked()){ selectedDaysOfWeek.add("SU"); }
+                if (checkMonday.isChecked()){ selectedDaysOfWeek.add("MO"); }
+                if (checkTuesday.isChecked()){ selectedDaysOfWeek.add("TU"); }
+                if (checkWednesday.isChecked()){ selectedDaysOfWeek.add("WE"); }
+                if (checkThursday.isChecked()){ selectedDaysOfWeek.add("TH"); }
+                if (checkFriday.isChecked()){ selectedDaysOfWeek.add("FR"); }
+                if (checkSaturday.isChecked()){ selectedDaysOfWeek.add("SA"); }
+            }
 
             if (title.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
                 Toast.makeText(this, "Please fill out all required fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // End Date validation for repeating events
+            if (frequencyInput.equals("DAILY") || frequencyInput.equals("WEEKLY") || frequencyInput.equals("MONTHLY")) {
+                if (recurrenceEndDateInput.isEmpty()) {
+                    Toast.makeText(this, "Please set a recurrence end date.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
 
             // Check if inputs are favorited locations
             String locationAddress = locationNameToAddress.containsKey(locationInput) ? locationNameToAddress.get(locationInput) : locationInput;
@@ -405,7 +499,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Create the event object
             String dateKey = String.format(Locale.getDefault(), "%1$tY-%1$tm-%1$td", calendar);
-            Event newEvent = new Event(title, dateKey, startTime, endTime, locationInput, fromLocationInput, notes);
+            Event newEvent = new Event(title, dateKey, startTime, endTime, locationInput, fromLocationInput, notes,
+                    frequencyInput, interval, recurrenceEndDateInput, selectedDaysOfWeek);
 
             // Call DirectionsAPI to calculate travel time
             DirectionsAPI directionsAPI = new DirectionsAPI(new DirectionsAPI.OnDirectionsListener() {
@@ -459,6 +554,19 @@ public class MainActivity extends AppCompatActivity {
         selectedDate = date;
         eventAdapter.updateDate(selectedDate);
 
+        List<Event> eventsForDate = eventsMap.getOrDefault(selectedDate, new ArrayList<>());
+
+        if (!eventsForDate.isEmpty()){
+            eventList.clear();
+            eventList.addAll(eventsForDate);
+            eventAdapter.notifyDataSetChanged();
+            eventRecyclerView.setVisibility(View.VISIBLE);
+        } else{
+            Toast.makeText(MainActivity.this, "No events for this date", Toast.LENGTH_SHORT).show();
+            eventRecyclerView.setVisibility(View.GONE);
+        }
+
+        /*
         eventsRef.child(selectedDate).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -485,6 +593,7 @@ public class MainActivity extends AppCompatActivity {
                 eventRecyclerView.setVisibility(View.GONE);
             }
         });
+         */
     }
 
 
@@ -575,6 +684,68 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return nextEvent;
+    }
+
+    private List<String> calculateOccurrences(Event event){
+        List<String> occurrenceDates = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getDefault());
+
+        try {
+            Date startDate = sdf.parse(event.getDate());
+            Date endDate = sdf.parse(event.getRecurrenceEndDate());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+
+            String recurrenceFrequency = event.getRecurrenceFrequency().toUpperCase();
+
+            switch (recurrenceFrequency) {
+                    case "DAILY" :
+                        while (!calendar.getTime().after(endDate)) {
+                            occurrenceDates.add(sdf.format(calendar.getTime()));
+                            calendar.add(Calendar.DAY_OF_MONTH, event.getRecurrenceInterval());
+                        }
+                        break;
+                    case "WEEKLY":
+                        while (!calendar.getTime().after(endDate)) {
+                            for (int i = 0; i < 7; i++) {
+                                if (calendar.getTime().after(endDate)){
+                                    break;
+                                }
+                                String currentDayOfWeek = new SimpleDateFormat("EE", Locale.ENGLISH)
+                                        .format(calendar.getTime()).toUpperCase(Locale.ENGLISH).substring(0,2);
+                                if (event.getRecurrenceDaysOfWeek().contains(currentDayOfWeek)) {
+                                    occurrenceDates.add(sdf.format(calendar.getTime()));
+                                }
+                                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                            }
+                            calendar.add(Calendar.WEEK_OF_YEAR, event.getRecurrenceInterval() - 1);
+                        }
+                        break;
+                    case "MONTHLY":
+                        while (!calendar.getTime().after(endDate)) {
+                            if (calendar.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(event.getDate().split("-")[2])) {
+                                occurrenceDates.add(sdf.format(calendar.getTime()));
+                            }
+                            calendar.add(Calendar.MONTH, event.getRecurrenceInterval());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return occurrenceDates;
+    }
+
+    private void addEventToMap(String date, Event event){
+        if (!eventsMap.containsKey(date)){
+            eventsMap.put(date, new ArrayList<>());
+        }
+        eventsMap.get(date).add(event);
     }
 
 }

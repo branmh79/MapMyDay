@@ -2,6 +2,9 @@ package com.SCGIII.mapmyday;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Event {
     @NonNull
     private String title;
@@ -14,10 +17,20 @@ public class Event {
     private String travelTime = "Calculating...";
     private String notes;
 
+    // Recurrence!
+    private String recurrenceFrequency;
+    private int recurrenceInterval;
+    private String recurrenceEndDate;
+    private List<String> recurrenceDaysOfWeek;
+
     // No-argument constructor required by Firebase
     public Event() {
         this.title = "";  // Assign a default non-null value
         this.date = "";   // Assign a default non-null value
+        this.recurrenceFrequency = "None"; // Assigning a default for non-recurring events
+        this.recurrenceInterval = 1;
+        this.recurrenceEndDate = "";
+        this.recurrenceDaysOfWeek = new ArrayList<>();
     }
 
     public String getTravelTime(){
@@ -30,7 +43,8 @@ public class Event {
     }
 
     // Constructor with parameters
-    public Event(@NonNull String title, @NonNull String date, String startTime, String endTime, String location, String fromLocation, String notes) {
+    public Event(@NonNull String title, @NonNull String date, String startTime, String endTime, String location, String fromLocation, String notes, String recurrenceFrequency, int recurrenceInterval,
+                 String recurrenceEndDate, List<String> recurrenceDaysOfWeek) {
         this.title = title != null ? title : "";
         this.date = date != null ? date : "";
         this.startTime = startTime;
@@ -39,6 +53,10 @@ public class Event {
         this.fromLocation = fromLocation;
         this.travelTime = "Calculating...";
         this.notes = notes;
+        this.recurrenceFrequency = recurrenceFrequency != null ? recurrenceFrequency : "None";
+        this.recurrenceInterval = recurrenceInterval;
+        this.recurrenceEndDate = recurrenceEndDate != null ? recurrenceEndDate : "";
+        this.recurrenceDaysOfWeek = recurrenceDaysOfWeek != null ? recurrenceDaysOfWeek : new ArrayList<>();
     }
 
     // Getters
@@ -70,6 +88,14 @@ public class Event {
 
     public String getNotes() { return notes; }
 
+    public String getRecurrenceFrequency() { return recurrenceFrequency; }
+
+    public int getRecurrenceInterval() { return recurrenceInterval; }
+
+    public String getRecurrenceEndDate() { return recurrenceEndDate; }
+
+    public List<String> getRecurrenceDaysOfWeek() { return recurrenceDaysOfWeek; }
+
     // Setters
     public void setTitle(@NonNull String title) {
         this.title = title != null ? title : "";
@@ -98,6 +124,14 @@ public class Event {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    public void setRecurrenceFrequency(String recurrenceFrequency) { this.recurrenceFrequency = recurrenceFrequency; }
+
+    public void setRecurrenceInterval(int recurrenceInterval) { this.recurrenceInterval = recurrenceInterval; }
+
+    public void setRecurrenceEndDate(String recurrenceEndDate) { this.recurrenceEndDate = recurrenceEndDate; }
+
+    public void setRecurrenceDaysOfWeek(List<String> recurrenceDaysOfWeek) { this.recurrenceDaysOfWeek = recurrenceDaysOfWeek; }
 
     // toString method for debugging
     @NonNull
