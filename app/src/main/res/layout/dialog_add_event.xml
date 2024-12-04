@@ -62,6 +62,7 @@
         android:padding="8dp"
         android:text="Date" /> -->
 
+    <!-- The buttons were not being accurately shown so quick patch of two linear layouts. -->
     <Spinner
         android:id="@+id/recurrenceFrequency"
         android:layout_width="match_parent"

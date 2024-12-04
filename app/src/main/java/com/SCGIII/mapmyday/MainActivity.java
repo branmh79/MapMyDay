@@ -249,12 +249,13 @@ public class MainActivity extends AppCompatActivity {
                         Event event = eventSnapshot.getValue(Event.class);
                         if (event != null) {
                             if (event.getRecurrenceFrequency() != null && !event.getRecurrenceFrequency().equalsIgnoreCase("None")){
-                                List<String> occurrenceDates = calculateOccurrences(event);
+                                // If there's any recurrence that isn't none, it will calculate the occurrence dates and add the event for each
+                                List<String> occurrenceDates = calculateOccurrences(event); //Occurrence dates
                                 for (String occurrenceDate : occurrenceDates) {
-                                    addEventToMap(occurrenceDate, event);
+                                    addEventToMap(occurrenceDate, event); // adding the event
                                 }
                             } else {
-                                addEventToMap(event.getDate(), event);
+                                addEventToMap(event.getDate(), event); // For non-recurring events
                                 //eventsList.add(event);
                             }
                         }
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Notify widget to refresh
                 updateWidget();
-
+                // Update the calendar view
                 updateCalendar();
             }
 

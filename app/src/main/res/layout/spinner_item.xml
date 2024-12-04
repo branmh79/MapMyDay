@@ -1,0 +1,8 @@
+<!-- res/loyout/spinner_item.xml -->
+
+<TextView android:id="@+id/spinnerItemText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:padding="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

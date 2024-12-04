@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MapMyDay</string>
     <string name="widget_name">Reminder Widget</string>
-    <string name="recurrence_type_prompt">Repeating Event?</string>
+    <string name="recurrence_type_prompt"> </string>
 </resources>
